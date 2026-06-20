@@ -7,6 +7,21 @@
 *.o
 *.obj
 
+Binaries
+DerivedDataCache
+Intermediate
+Saved
+.vscode
+.vs
+*.VC.db
+*.opensdf
+*.opendb
+*.sdf
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+
 # Precompiled Headers
 *.gch
 *.pch
