@@ -81,11 +81,6 @@ protected:
 	/** Set up input action bindings */
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	
-private:
-
-	void SaveGame();
-
-	void LoadGame();
 
 public:
 
