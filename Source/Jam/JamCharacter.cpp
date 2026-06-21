@@ -7,8 +7,10 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "MySaveGame.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Jam.h"
+#include "SaveTutorial.h"
 
 AJamCharacter::AJamCharacter()
 {
@@ -64,6 +66,9 @@ void AJamCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	{
 		UE_LOG(LogJam, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+
+	InputComponent->BindAction("IA_Save", IE_Pressed, this, &AJamCharacter::SaveGame);
+	InputComponent->BindAction("IA_Load", IE_Pressed, this, &AJamCharacter::LoadGame);
 }
 
 
@@ -117,4 +122,27 @@ void AJamCharacter::DoJumpEnd()
 {
 	// pass StopJumping to the character
 	StopJumping();
+}
+
+void AJamCharacter::SaveGame()
+{
+	//Create an instance of out savegame class
+	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	//Set the save game instance location equal to the players current location
+	SaveGameInstance->PlayerLocation = this->GetActorLocation();
+	//Save the savegameinstance
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+	//Debug
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Game Saved."));
+}
+
+void AJamCharacter::LoadGame();
+{
+	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	//Load the save game into our savegameinstance variable
+	SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot", 0));
+	//Set the players position from rhe save game file
+	this->SetActorLocation(SaveGameInstance->PlayerLocation);
+	//Log
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Game Loaded."));
 }
